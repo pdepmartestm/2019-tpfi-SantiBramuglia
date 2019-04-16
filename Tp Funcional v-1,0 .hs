@@ -1,10 +1,4 @@
 import Text.Show.Functions
-
-data Pirata = Pirata {
-	nombrePirata :: String,
-	botinPirata :: [String],
-	valorBotin ::	[Int],
-import Text.Show.Functions
 import Data.List
 
 type ValorBotin = Int
@@ -14,6 +8,11 @@ data Pirata = Pirata {
  nombrePirata :: String,
  botinPirata :: [(String, Int)],
  nombreBarcoEmbarcado :: String
+} deriving (Eq, Show)
+
+data Barco = Barco {
+ nombreBarco :: String
+ --piratasEmbarcados :: [Pirata]
 } deriving (Eq, Show)
 
 jack = Pirata {
@@ -46,6 +45,19 @@ elizabeth = Pirata {
  nombreBarcoEmbarcado =  "Holandes Errante"
 }
 
+holandes = Barco {
+ nombreBarco = "Holandes Errante"
+ --piratasEmbarcados = []
+} 
+
+perlaNegra = Barco {
+ nombreBarco = "Perla Negra"
+ --piratasEmbarcados = []
+} 
+
+primero (x,_) = x
+segundo (_,x) = x
+
 cantidadDeTesorosDePirata pirata = length (botinPirata pirata)
 
 valoresTesorosPirata pirata = map snd (botinPirata pirata ) 
@@ -58,8 +70,31 @@ valorTesoroMasValioso pirata = maximum (valoresTesorosPirata pirata)
 
 agregarTesoro pirata nombreTesoro valorBotin = (nombreTesoro,valorBotin) : botinPirata pirata
 
+--tienenMismoTesoro :: (Pirata->Pirata) -> bool
+tienenTesorosDeIgualNombre pirata pirata2 = any(==True)(zipWith (==)(map primero (botinPirata pirata))(map primero  (botinPirata pirata2)))
 
-abordarBarco pirata nombreBarcoEmbarcadoNuevo = let nombreBarcoEmbarcado pirata = nombreBarcoEmbarcadoNuevo
+tienenMismoTesoroDeIgualValor pirata pirata2 =  any(==True) (zipWith (/=)(map segundo (botinPirata pirata)) (map segundo (botinPirata pirata2))) 
 
-desabordarBarco pirata = " "  = nombreBarcoEmbarcado pirata
+tienenTesorosIgualesYDiferenteValor pirata pirata2 =  (tienenMismoTesoroDeIgualValor pirata pirata2 &&(tienenTesorosDeIgualNombre pirata pirata2) )
+
+tieneValorMayor100 pirata = map (>100)(valoresTesorosPirata pirata)
+
+--perderTesoroValioso pirata = map filter (tieneValorMayor100 pirata)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
