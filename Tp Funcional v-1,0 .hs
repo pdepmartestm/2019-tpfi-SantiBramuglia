@@ -58,6 +58,8 @@ perlaNegra = Barco {
 primero (x,_) = x
 segundo (_,x) = x
 
+nombreTesoro pirata = map primero (botinPirata pirata )
+
 cantidadDeTesorosDePirata pirata = length (botinPirata pirata)
 
 valoresTesorosPirata pirata = map snd (botinPirata pirata ) 
@@ -71,14 +73,16 @@ valorTesoroMasValioso pirata = maximum (valoresTesorosPirata pirata)
 agregarTesoro pirata nombreTesoro valorBotin = (nombreTesoro,valorBotin) : botinPirata pirata
 
 --tienenMismoTesoro :: (Pirata->Pirata) -> bool
-tienenTesorosDeIgualNombre pirata pirata2 = any(==True)(zipWith (==)(map primero (botinPirata pirata))(map primero  (botinPirata pirata2)))
+tienenTesorosDeIgualNombre pirata pirata2 = any(==True)(zipWith (==)(nombreTesoro pirata)(nombreTesoro pirata2))
 
-tienenMismoTesoroDeIgualValor pirata pirata2 =  any(==True) (zipWith (/=)(map segundo (botinPirata pirata)) (map segundo (botinPirata pirata2))) 
+tienenMismoTesoroDeIgualValor pirata pirata2 =  any(==True) (zipWith (/=)(valoresTesorosPirata pirata) (valoresTesorosPirata pirata2)) 
 
 tienenTesorosIgualesYDiferenteValor pirata pirata2 =  (tienenMismoTesoroDeIgualValor pirata pirata2 &&(tienenTesorosDeIgualNombre pirata pirata2) )
 
-tieneValorMayor100 pirata = map (>100)(valoresTesorosPirata pirata)
+sacarConValorMayor100 pirata = filter  ((<100).segundo)   (botinPirata pirata) 
 
+
+sacarSiSeLLama pirata nombreTesoroPerder = filter  ((/=nombreTesoroPerder).primero)   (botinPirata pirata) 
 --perderTesoroValioso pirata = map filter (tieneValorMayor100 pirata)
 
 
