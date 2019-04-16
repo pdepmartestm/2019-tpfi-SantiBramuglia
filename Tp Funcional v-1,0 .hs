@@ -4,52 +4,62 @@ data Pirata = Pirata {
 	nombrePirata :: String,
 	botinPirata :: [String],
 	valorBotin ::	[Int],
-	nombreBarcoEmbarcado :: String
-} deriving (Show)
+import Text.Show.Functions
+import Data.List
 
-data Botin = Botin {
-	nombreBotin :: String,
-	valor ::  Int
-} deriving (Show)
+type ValorBotin = Int
 
-data Barco = Barco {
-	nombreBarco :: String,
-	tripulantes :: [String]
-} deriving (Show)
 
-sombrero = Botin {
-	nombreBotin = "Sombrero",
-	valor = 10
-} 
+data Pirata = Pirata {
+ nombrePirata :: String,
+ botinPirata :: [(String, Int)],
+ nombreBarcoEmbarcado :: String
+} deriving (Eq, Show)
 
 jack = Pirata {
-	nombrePirata = "Jack Parrow"
-}
-
-will = Pirata {
-	nombrePirata = "Will Turner"
-}
-elizabeth = Pirata {
-	nombrePirata = "Elizabeth Swann"
+ nombrePirata = "Jack Sparrow",
+ botinPirata = [("Sombrero", 100),("botella de Ron", 150)],
+ nombreBarcoEmbarcado =  "Perla Negra"
 }
 
 david = Pirata {
-	nombrePirata = "David Jones"
+ nombrePirata = "David Jones",
+ botinPirata = [("Doblones de Oro", 50000),("botella de Arena", 1)],
+ nombreBarcoEmbarcado =  "Perla Negra"
 }
 
-perla = Barco {
-	nombreBarco = "Perla Negra",
-	tripulantes = ["Elizabeth Swann"]
+anne = Pirata {
+ nombrePirata = "Anne Bonny",
+ botinPirata = [("Caja Musical", 60),("botella de Ron", 200)],
+ nombreBarcoEmbarcado =  "Holandes Errante"
 }
 
-holandes = Barco {
-	nombreBarco = "Holandes Errante",
-	tripulantes = ["David Jones"]
+will = Pirata {
+ nombrePirata = "Will Turner",
+ botinPirata = [],
+ nombreBarcoEmbarcado =  ""
 }
 
-noHayDivisores minimo maximo n 
-    | esDivisor minimo n = False
-    | minimo == maximo   = True
-    | otherwise          = noHayDivisores (minimo + 1) maximo n
+elizabeth = Pirata {
+ nombrePirata = "Elizabeth Swann",
+ botinPirata = [("Sombrero", 200),("Doblones de plata", 30000)],
+ nombreBarcoEmbarcado =  "Holandes Errante"
+}
 
-esDivisor unNumero otroNumero = mod otroNumero unNumero == 0
+cantidadDeTesorosDePirata pirata = length (botinPirata pirata)
+
+valoresTesorosPirata pirata = map snd (botinPirata pirata ) 
+
+sumaTesorosPirata pirata = sum (valoresTesorosPirata pirata )
+
+esRico pirata = sumaTesorosPirata pirata > 9999
+
+valorTesoroMasValioso pirata = maximum (valoresTesorosPirata pirata)
+
+agregarTesoro pirata nombreTesoro valorBotin = (nombreTesoro,valorBotin) : botinPirata pirata
+
+
+abordarBarco pirata nombreBarcoEmbarcadoNuevo = let nombreBarcoEmbarcado pirata = nombreBarcoEmbarcadoNuevo
+
+desabordarBarco pirata = " "  = nombreBarcoEmbarcado pirata
+
