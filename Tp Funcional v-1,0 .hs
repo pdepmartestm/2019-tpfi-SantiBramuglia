@@ -7,56 +7,63 @@ type ValorBotin = Int
 data Pirata = Pirata {
  nombrePirata :: String,
  botinPirata :: [(String, Int)],
- nombreBarcoEmbarcado :: String
-} deriving (Eq, Show)
+ formaSaqueo :: FormaSaquear
+}deriving ( Show)
 
 data Barco = Barco {
- nombreBarco :: String
- --piratasEmbarcados :: [Pirata]
-} deriving (Eq, Show)
+ nombreBarco :: String,
+ piratasEmbarcados :: [Pirata]
+} deriving ( Show)
+
 
 jack = Pirata {
  nombrePirata = "Jack Sparrow",
  botinPirata = [("Sombrero", 100),("botella de Ron", 150)],
- nombreBarcoEmbarcado =  "Perla Negra"
+ formaSaqueo = mayoresDe100
 }
 
 david = Pirata {
  nombrePirata = "David Jones",
  botinPirata = [("Doblones de Oro", 50000),("botella de Arena", 1)],
- nombreBarcoEmbarcado =  "Perla Negra"
+ formaSaqueo = saqueoComplejo
+ 
 }
 
 anne = Pirata {
  nombrePirata = "Anne Bonny",
  botinPirata = [("Caja Musical", 60),("botella de Ron", 200)],
- nombreBarcoEmbarcado =  "Holandes Errante"
-}
+ formaSaqueo = palabraClave
+ }
 
 will = Pirata {
  nombrePirata = "Will Turner",
  botinPirata = [],
- nombreBarcoEmbarcado =  ""
+ formaSaqueo = noSaquear
 }
 
 elizabeth = Pirata {
  nombrePirata = "Elizabeth Swann",
  botinPirata = [("Sombrero", 200),("Doblones de plata", 30000)],
- nombreBarcoEmbarcado =  "Holandes Errante"
+ formaSaqueo = mayoresDe100
 }
 
 holandes = Barco {
- nombreBarco = "Holandes Errante"
- --piratasEmbarcados = []
+ nombreBarco = "Holandes Errante",
+ piratasEmbarcados = [jack, david]		
 } 
 
 perlaNegra = Barco {
- nombreBarco = "Perla Negra"
- --piratasEmbarcados = []
+ nombreBarco = "Perla Negra",
+ piratasEmbarcados = [elizabeth,will]
 } 
 
 primero (x,_) = x
 segundo (_,x) = x
+
+--Agragar Devolver Pirata completo 
+devolverPirataModificado pirata = pirata
+
+
 
 nombreTesoro pirata = map primero (botinPirata pirata )
 
@@ -70,26 +77,50 @@ esRico pirata = sumaTesorosPirata pirata > 9999
 
 valorTesoroMasValioso pirata = maximum (valoresTesorosPirata pirata)
 
-agregarTesoro pirata nombreTesoro valorBotin = (nombreTesoro,valorBotin) : botinPirata pirata
+agregarTesoro pirata (nombreTesoro, valorBotin) = ((nombreTesoro,valorBotin) : botinPirata pirata)  -- le dan TUPLA devuelve pirata 
 
---tienenMismoTesoro :: (Pirata->Pirata) -> bool
-tienenTesorosDeIgualNombre pirata pirata2 = any(==True)(zipWith (==)(nombreTesoro pirata)(nombreTesoro pirata2))
+tienenTesorosDeIgualNombre pirata pirata2 = any (==True)(zipWith (==)(nombreTesoro pirata)(nombreTesoro pirata2)) --MODIFICAR
 
-tienenMismoTesoroDeIgualValor pirata pirata2 =  any(==True) (zipWith (/=)(valoresTesorosPirata pirata) (valoresTesorosPirata pirata2)) 
+tienenMismoTesoroDeIgualValor pirata pirata2 = any (==True) (zipWith (/=)(valoresTesorosPirata pirata) (valoresTesorosPirata pirata2)) 
 
 tienenTesorosIgualesYDiferenteValor pirata pirata2 =  (tienenMismoTesoroDeIgualValor pirata pirata2 &&(tienenTesorosDeIgualNombre pirata pirata2) )
 
 sacarConValorMayor100 pirata = filter  ((<100).segundo)   (botinPirata pirata) 
 
-
-sacarSiSeLLama pirata nombreTesoroPerder = filter  ((/=nombreTesoroPerder).primero)   (botinPirata pirata) 
---perderTesoroValioso pirata = map filter (tieneValorMayor100 pirata)
+sacarTesoroSiSeLLama pirata nombreTesoroPerder = filter  ((/=nombreTesoroPerder).primero)   (botinPirata pirata) 
 
 
+--TEMPORADA DE TESOROS REVISAR 
+
+type FormaSaquear = Pirata -> [(String,Int)]
+
+
+--saqueo pirata = saquearSegun pirata 
+
+
+saqueo :: FormaSaquear
+saqueo formaSaqueo pirata (nombreTesoro, valorBotin) | formaSaqueo pirata (nombreTesoro, valorBotin) = agregarTesoro pirata (nombreTesoro,  valorBotin)
+									                   | otherwise = botinPirata pirata
+
+mayoresDe100 :: FormaSaquear	
+mayoresDe100 pirata (nombreTesoro,valorBotin) | (>100) valorBotin = agregarTesoro pirata (nombreTesoro, valorBotin)
+														 | otherwise = botinPirata pirata 
+														 
+														 
+														 
+--soloTomaConNombre pirata nombreRoboPirata = pasar la palabra clave y que de ahi se cree la condicion 
 
 
 
+--tomarConNombre pirata (nombreTesoro, valorBotin)  | (==nombreTesoroTomar) soloRoba) = (agregarTesoro pirata (nombreTesoro, valorBotin))
+--										| otherwise = botinPirata pirata
+	
+noSaquear :: FormaSaquear
+noSaquear pirata  =  botinPirata pirata
 
+--saqueoComplejo pirata
+
+-- saquear jack (saquearPorNombre "oro")
 
 
 
