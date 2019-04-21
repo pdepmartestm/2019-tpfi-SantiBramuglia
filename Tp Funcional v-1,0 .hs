@@ -19,20 +19,20 @@ data Barco = Barco {
 jack = Pirata {
  nombrePirata = "Jack Sparrow",
  botinPirata = [("Sombrero", 100),("botella de Ron", 150)],
- formaSaqueo = mayoresDe100
+ formaSaqueo = noSaquear
 }
 
 david = Pirata {
  nombrePirata = "David Jones",
  botinPirata = [("Doblones de Oro", 50000),("botella de Arena", 1)],
- formaSaqueo = saqueoComplejo
+ formaSaqueo = noSaquear
  
 }
 
 anne = Pirata {
  nombrePirata = "Anne Bonny",
  botinPirata = [("Caja Musical", 60),("botella de Ron", 200)],
- formaSaqueo = palabraClave
+ formaSaqueo = mayoresDe100
  }
 
 will = Pirata {
@@ -44,17 +44,17 @@ will = Pirata {
 elizabeth = Pirata {
  nombrePirata = "Elizabeth Swann",
  botinPirata = [("Sombrero", 200),("Doblones de plata", 30000)],
- formaSaqueo = mayoresDe100
+ formaSaqueo = noSaquear
 }
 
 holandes = Barco {
- nombreBarco = "Holandes Errante",
- piratasEmbarcados = [jack, david]		
+nombreBarco = "Holandes Errante",
+piratasEmbarcados = []		
 } 
 
 perlaNegra = Barco {
- nombreBarco = "Perla Negra",
- piratasEmbarcados = [elizabeth,will]
+nombreBarco = "Perla Negra",
+piratasEmbarcados = []
 } 
 
 primero (x,_) = x
@@ -77,7 +77,7 @@ esRico pirata = sumaTesorosPirata pirata > 9999
 
 valorTesoroMasValioso pirata = maximum (valoresTesorosPirata pirata)
 
-agregarTesoro pirata (nombreTesoro, valorBotin) = ((nombreTesoro,valorBotin) : botinPirata pirata)  -- le dan TUPLA devuelve pirata 
+agregarTesoro pirata (nombreTesoro, valorBotin) = id ((nombreTesoro,valorBotin) : botinPirata pirata)   -- le dan TUPLA devuelve pirata 
 
 tienenTesorosDeIgualNombre pirata pirata2 = any (==True)(zipWith (==)(nombreTesoro pirata)(nombreTesoro pirata2)) --MODIFICAR
 
@@ -99,15 +99,13 @@ type FormaSaquear = Pirata -> [(String,Int)]
 
 
 saqueo :: FormaSaquear
-saqueo formaSaqueo pirata (nombreTesoro, valorBotin) | formaSaqueo pirata (nombreTesoro, valorBotin) = agregarTesoro pirata (nombreTesoro,  valorBotin)
-									                   | otherwise = botinPirata pirata
+saqueo pirata (nombreTesoro, valorBotin) = (formaSaqueo pirata) ((nombreTesoro, valorBotin))
+									                   
 
 mayoresDe100 :: FormaSaquear	
 mayoresDe100 pirata (nombreTesoro,valorBotin) | (>100) valorBotin = agregarTesoro pirata (nombreTesoro, valorBotin)
-														 | otherwise = botinPirata pirata 
-														 
-														 
-														 
+											| otherwise = botinPirata pirata 
+
 --soloTomaConNombre pirata nombreRoboPirata = pasar la palabra clave y que de ahi se cree la condicion 
 
 
@@ -116,7 +114,7 @@ mayoresDe100 pirata (nombreTesoro,valorBotin) | (>100) valorBotin = agregarTesor
 --										| otherwise = botinPirata pirata
 	
 noSaquear :: FormaSaquear
-noSaquear pirata  =  botinPirata pirata
+noSaquear pirata =  botinPirata pirata
 
 --saqueoComplejo pirata
 
@@ -124,6 +122,7 @@ noSaquear pirata  =  botinPirata pirata
 
 
 
+--- TRIPULACIONES
 
 
 
