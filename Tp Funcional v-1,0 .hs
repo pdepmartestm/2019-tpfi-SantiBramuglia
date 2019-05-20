@@ -32,7 +32,7 @@ david = Pirata {
 anne = Pirata {
  nombrePirata = "Anne Bonny",
  botinPirata = [("Caja Musical", 60),("botella de Ron", 200)],
- formaSaqueo = mayoresDe100
+ formaSaqueo = noSaquear
  }
 
 will = Pirata {
@@ -48,13 +48,13 @@ elizabeth = Pirata {
 }
 
 holandes = Barco {
-nombreBarco = "Holandes Errante",
-piratasEmbarcados = []		
+ nombreBarco = "Holandes Errante",
+ piratasEmbarcados = [david]		
 } 
 
 perlaNegra = Barco {
-nombreBarco = "Perla Negra",
-piratasEmbarcados = []
+ nombreBarco = "Perla Negra",
+ piratasEmbarcados =[will]
 } 
 
 primero (x,_) = x
@@ -77,7 +77,7 @@ esRico pirata = sumaTesorosPirata pirata > 9999
 
 valorTesoroMasValioso pirata = maximum (valoresTesorosPirata pirata)
 
-agregarTesoro pirata (nombreTesoro, valorBotin) = id ((nombreTesoro,valorBotin) : botinPirata pirata)   -- le dan TUPLA devuelve pirata 
+agregarTesoro pirata (nombreTesoro, valorBotin) = pirata { botinPirata = (nombreTesoro,valorBotin) : (botinPirata pirata) }  
 
 tienenTesorosDeIgualNombre pirata pirata2 = any (==True)(zipWith (==)(nombreTesoro pirata)(nombreTesoro pirata2)) --MODIFICAR
 
@@ -85,46 +85,47 @@ tienenMismoTesoroDeIgualValor pirata pirata2 = any (==True) (zipWith (/=)(valore
 
 tienenTesorosIgualesYDiferenteValor pirata pirata2 =  (tienenMismoTesoroDeIgualValor pirata pirata2 &&(tienenTesorosDeIgualNombre pirata pirata2) )
 
-sacarConValorMayor100 pirata = filter  ((<100).segundo)   (botinPirata pirata) 
+sacarTesoro :: Pirata -> (Pirata -> t -> [(String, Int)]) -> t -> Pirata
+sacarTesoro pirata sacarElemento nombreTesoros = pirata {botinPirata = sacarElemento pirata nombreTesoros }
+
+sacarConValorMayor100 pirata nombreTesoros = filter  ((<100).segundo)   (botinPirata pirata) 
 
 sacarTesoroSiSeLLama pirata nombreTesoroPerder = filter  ((/=nombreTesoroPerder).primero)   (botinPirata pirata) 
 
 
---TEMPORADA DE TESOROS REVISAR 
+--TEMPORADA DE TESOROS REVISAR ---
 
-type FormaSaquear = Pirata -> [(String,Int)]
-
-
---saqueo pirata = saquearSegun pirata 
+type FormaSaquear = Pirata  -> Pirata
 
 
-saqueo :: FormaSaquear
-saqueo pirata (nombreTesoro, valorBotin) = (formaSaqueo pirata) ((nombreTesoro, valorBotin))
+--saqueo :: FormaSaquear
+saqueo pirata (nombreTesoro, valorBotin) formaSaqueo = (formaSaqueo pirata) (pirata (nombreTesoro, valorBotin))
 									                   
 
-mayoresDe100 :: FormaSaquear	
-mayoresDe100 pirata (nombreTesoro,valorBotin) | (>100) valorBotin = agregarTesoro pirata (nombreTesoro, valorBotin)
-											| otherwise = botinPirata pirata 
+--mayoresDe100 :: FormaSaquear	
+mayoresDe100 pirata (nombreTesoro,valorBotin) | ((>100) valoresTesorosPirata pirata) = agregarTesoro pirata (nombreTesoro, valorBotin)
+											 |otherwise =  pirata
 
 --soloTomaConNombre pirata nombreRoboPirata = pasar la palabra clave y que de ahi se cree la condicion 
 
-
-
 --tomarConNombre pirata (nombreTesoro, valorBotin)  | (==nombreTesoroTomar) soloRoba) = (agregarTesoro pirata (nombreTesoro, valorBotin))
---										| otherwise = botinPirata pirata
+--										| otherwise =  pirata
 	
-noSaquear :: FormaSaquear
-noSaquear pirata =  botinPirata pirata
+
+--noSaquear :: FormaSaquear
+noSaquear pirata  =  pirata 
 
 --saqueoComplejo pirata
 
 -- saquear jack (saquearPorNombre "oro")
 
+--- TRIPULACIONES ----
+---type Embarcar = Barco -> Pirata -> Barco
+--abordarBarco :: Embarcar
+--abordarBarco pirata barco = (piratasEmbarcados barco):(pirata)
 
-
---- TRIPULACIONES
-
-
+--desabordarBarco :: Embarcar
+--desabordarBarco pirata barco = filter (pirata) (piratasEmbarcados barco) 
 
 
 
